@@ -169,9 +169,9 @@
               & \hat{\mathbf{x}}_{k|k}=\hat{\mathbf{x}}_{k| k-1}+\mathbf{K}_k\mathbf{v}_k\\
               & \mathbf{P}_{k|k}=(\mathbb{I}-\mathbf{K}_k)\mathbf{P}_{k|k-1}\label{kalman2}
               \end{align}
-              By recursive predictions and corrections, one is able to dynamically track the non-stationary system. One advantage of using the Kalman filter is that it doesn't make an assumption on the distribution of noises, which allows it to be used on more general signals \cite{bishopintro}.
+              By recursive predictions and corrections, one is able to dynamically track the non-stationary system. One advantage of using the Kalman filter is that it doesn't make an assumption on the distribution of noises, which allows it to be used on more general signals .
 
-              In order to apply it on the stock prices, a simple assumption is made based on the high fluctuation of the stock price to model the stock market as a maneuvering dynamic system\cite{xapplication}, that is \begin{align}
+              In order to apply it on the stock prices, a simple assumption is made based on the high fluctuation of the stock price to model the stock market as a maneuvering dynamic system, that is \begin{align}
               x(t+1)=x(t)+T\dot{x}(t)+\dfrac{1}{2}a(t) T^2\\
               \dot{x}(t+1)=\dot{x}(t)+a(t) T\\
               y(t)=x(t)+v(t)
@@ -186,6 +186,58 @@
               \end{align*}
 
             </div>
+          </section>
+        </div>
+        <div class="mdl-layout__tab-panel" id="forecast">
+          <section class="section--center mdl-grid mdl-grid--no-spacing">
+            <div class="mdl-cell mdl-cell--12-col">
+              <h4>Forecast</h4>
+
+              <ul class="toc">
+                <h4>Contents</h4>
+                <a href="#fmlr">Multiple Linear Regression</a>
+                <a href="#fprony">Prony’s Algorithm</a>
+                <a href="#fkalman">Kalman Filter</a>
+              </ul>
+              <div id="fmlr">
+                <h5>Multiple Linear Regression</h5>
+                <p>
+                  Multiple Linear Regression is performed on a data set either to predict the response variable based on the predictor variable, or to study the relationship between the response variable and predictor variables. It is one of the most fundamental and commonly used regression models and is readily applied. In application, the linear regression trys to fit a linear model of the form
+                  \begin{align}
+                  Y= b_0 + b_1X_1 + b_2X_2+ \dots + b_kX_k+ e
+                  \end{align}
+                  on a given dataset, where \(Y\) is the dependent variable (response), \(X_1, X_2,\dots,X_k\) are the independent variables (predictors), \(e\) is the random error, and \(b_0 , b_1, b_2, \dots, b_k\) are known as the regression coefficients, which have to be estimated from the data .
+                </p>
+                <p>
+                  In this project, we applied multiple linear regression on the price and date, which gave a general trend of the stock price and thus were able to extrapolate the price trend.
+                </p>
+
+              </div>
+              <div id="fprony">
+                <h5>Prony’s Algorithm</h5>
+                <p>
+                  Prony’s Algorithm was developed by Gaspard Riche de Prony in 1795, and similar to that of Fourier Transform, Prony’s Algorithm extracts the important components of a signal using a series of complex exponentials instead of trigonometric functions. Unlike Fourier transform, Prony’s algorithm is much better suited for the analysis of our model as majority of our stock market trends are not only non-periodic, but also correspond to that of exponential functions.
+                  \begin{align}
+                  j_{km}(t;s_n,R_n)=2\sum_n \Re\left(_nR_{km}e^{s_nt}\right)\label{prony}
+                  \end{align}
+                </p>
+                <p>
+                  Equation \eqref{prony} shows how Prony's method can be used to show the impulse response is comprised of a series of complex exponentials. However, for the scope of this project, we use this property of the Prony’s algorithm to find out the digital filter coefficients in order to predict the future trend using the previous stock market data.
+                  \begin{align}
+                  H(z)=\dfrac{\sum_{k=0}^q b[k]z^{-k}}{1+\sum_{l=0}^p a[l]z^{-l}},
+                  \end{align}
+                  where \(a\) is coefficient of the zeros and \(b\) is coefficient of the poles.
+                </p>
+                <p style="text-align: center"><img src="images/tf.jpg" width="300px"/></p>
+                <p>
+                  Specific time series of data (either closing or opening price) are used to determine the coefficients from numerator and denominator of the filter using MATLAB. Based on the determined transfer function of the filter, an impulse response can be used extrapolate the future trends of the desired variable.              </div>
+                </p>
+              <div id="fkalman">
+                <h5>Kalman Filter</h5>
+                <p>
+                  As is introduced in <a href="#preprop">pre-processing</a> section, the Kalman filter is able to make one step ahead prediction, which is also very important especially for those short-term investors, though it does not work well on predicting the long term trend. To predict the next day's price, we simply implement the Kalman filter on the previous price and do the prediction step given in equation \eqref{kalman1} once more.
+                </p>
+              </div>
           </section>
         </div>
         <footer class="mdl-mega-footer">
