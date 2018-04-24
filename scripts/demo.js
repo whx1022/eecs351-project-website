@@ -13,14 +13,17 @@ app = new Vue({
     from: '2017-01-01',
     to: '2018-01-01',
     pchart: null,
+    rchart: null,
     range: [],
   },
   watch:{
     sma_n: function(){
       this.drawPrice();
+      this.drawRegression();
     },
     ewma_a: function(){
       this.drawPrice();
+      this.drawRegression();
     },
   },
   computed: {
@@ -87,8 +90,22 @@ app = new Vue({
     }
   },
   methods: {
-
-    test: function () {
+    regression: function(x,y){
+      x = x.map(function(d){ return [+d]; });
+      y = y.map(function(d){ return [+d]; });
+      var m = y.length;
+      x = math.concat(math.ones(m,1), x);
+      y = math.matrix(y);
+      var tr = math.transpose(x);
+      var tr_x = math.multiply(tr, x);
+      var tr_y = math.multiply(tr, y);
+      var theta = math.multiply( math.inv(tr_x), tr_y );
+      return function() {
+        var args = Array.prototype.slice.call(arguments);
+        return math.multiply(math.matrix(math.concat([1], args)), theta);
+      }
+    },
+    getPrice: function () {
       var price=[];
       var date=[];
       var self=this;
@@ -131,6 +148,34 @@ app = new Vue({
       this.pchart = new google.visualization.LineChart(document.getElementById('price'));
       this.pchart.draw(data, options);
     },
+    drawRegression: function(){
+      var ts=[];
+      for (i=0;i<this.date.length;i++){
+        ts[i]=this.date[i].getTime();
+      }
+      var ewma=this.ewma;
+      f=this.regression(ts,ewma);
+      var data = new google.visualization.DataTable();
+      data.addColumn('date', 'Time');
+      data.addColumn('number', 'Price');
+      data.addColumn('number', 'Regression');
+      for (var i = 0; i < this.price.length; i++) {
+        data.addRow([this.date[i],this.ewma[i],f(ts[i])._data[0]])
+      }
+      var options = {
+        hAxis: {
+          title: 'Time'
+        },
+        vAxis: {
+          title: 'Price'
+        },
+        height: 500,
+        title:'Linear Regression ' + this.symbol,
+      };
+      this.rchart = new google.visualization.LineChart(document.getElementById('regression'));
+      this.rchart.draw(data, options);
+
+    }
 
   }
 });

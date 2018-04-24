@@ -241,32 +241,46 @@
           </section>
         </div>
         <div class="mdl-layout__tab-panel" id="demo">
+
           <section class="section--center mdl-grid mdl-grid--no-spacing">
-          <div style="width:100%;">
-            <!-- Simple Textfield -->
-            <div>
-              <div class="mdl-textfield mdl-js-textfield">
-                <input v-model="symbol" class="mdl-textfield__input" type="text" id="symbol">
-                <label class="mdl-textfield__label" for="symbol">Stock Symbol (eg. MSFT)...</label>
+            <div class="mdl-cell mdl-cell--12-col">
+              <h4>Demo</h4>
+              <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+                <div class="mdl-card mdl-cell mdl-cell--12-col">
+                  <div class="mdl-card__supporting-text">
+                    <div class="mdl-textfield mdl-js-textfield">
+                      <input v-model="symbol" class="mdl-textfield__input" type="text" id="symbol">
+                      <label class="mdl-textfield__label" for="symbol">Stock Symbol (eg. MSFT)...</label>
+                    </div>
+                    <button v-on:click="getPrice()" class="mdl-button mdl-js-button mdl-button--raised">
+                      Button
+                    </button>
+                  </div>
+                </div>
+              </section>
+              <div id="dprep">
+                <h5>Data Preprocessing</h5>
+                <div style="width:100%;">
+                  <p> <span>\(n\)</span>={{sma_n}} </p>
+                  <p style="width:300px">
+                    <input class="mdl-slider mdl-js-slider" type="range" v-model="sma_n"
+                           min="1" max="100" value="3" tabindex="0">
+                  </p>
+                  <p><span>\(\alpha\)</span>={{ewma_a}}</p>
+                  <p style="width:300px">
+                    <input class="mdl-slider mdl-js-slider" type="range" v-model="ewma_a"
+                           min="1" max="100" value="33" tabindex="0">
+                  </p>
+                  <div id="price" style="width:100%;"></div>
+                  <button v-on:click="drawRegression()" class="mdl-button mdl-js-button mdl-button--raised">
+                    Button
+                  </button>
+                  <div id="regression" style="width:100%;"></div>
+                </div>
               </div>
             </div>
-            <!-- Raised button -->
-            <button v-on:click="test()" class="mdl-button mdl-js-button mdl-button--raised">
-              Button
-            </button>
-            <!-- Slider with Starting Value -->
-            <p> <span>\(n\)</span>={{sma_n}} </p>
-            <p style="width:300px">
-              <input class="mdl-slider mdl-js-slider" type="range" v-model="sma_n"
-                     min="1" max="100" value="3" tabindex="0">
-            </p>
-            <p><span>\(\alpha\)</span>={{ewma_a}}</p>
-            <p style="width:300px">
-              <input class="mdl-slider mdl-js-slider" type="range" v-model="ewma_a"
-                     min="1" max="100" value="33" tabindex="0">
-            </p>
-            <div id="price" style="width:100%;"></div>
-          </div>
+
+
 
 
 
