@@ -38,6 +38,8 @@
 
     <!-- Material Design icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="styles/mdDateTimePicker.min.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 
     <!-- Material Design Lite page styles:
@@ -55,19 +57,19 @@
   <body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
       <header class="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
-        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+        <div class="mdl-layout__header-row">
         </div>
-        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
-          <h3>Stock Market Analysis</h3>
+        <div class="mdl-layout__header-row">
+          <h4 style="font-size: 24px">Stock Market Analysis</h4>
         </div>
-        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+        <div class="mdl-layout__header-row">
         </div>
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
           <a href="#overview" class="mdl-layout__tab is-active">Overview</a>
           <a href="#preprop" class="mdl-layout__tab">Pre-Processing</a>
           <a href="#forecast" class="mdl-layout__tab">Forecasting</a>
           <a href="#demo" class="mdl-layout__tab">Demo</a>
-          <a href="#faq" class="mdl-layout__tab">FAQ</a>
+          <a href="#conc" class="mdl-layout__tab">Conclusion</a>
         </div>
       </header>
       <main class="mdl-layout__content">
@@ -76,7 +78,9 @@
             <div class="mdl-card mdl-cell mdl-cell--12-col">
               <div class="mdl-card__supporting-text">
                 <h4>Objective</h4>
-                The objective of this project was to create a program that would take in a stock symbol from a user and return a suggested method of trading based on the stock’s history. For the purposes of this project, we designed our program to be able to handle user-specified resolutions of a day, week, or month over a specified range of dates.
+                <p>
+                  The objective of this project was to create a program that would take in a stock symbol from a user and return a suggested method of trading based on the stock’s history. For the purposes of this project, we designed our program to be able to handle user-specified resolutions of a day, week, or month over a specified range of dates.
+                </p>
               </div>
             </div>
           </section>
@@ -132,7 +136,9 @@
           <section class="section--center mdl-grid mdl-grid--no-spacing">
             <div class="mdl-cell mdl-cell--12-col">
               <h4>Pre-Processing</h4>
-              The individual stock data was fetched from online open API, where we are able to get price of up to the past 20 years given the stock symbol. To analyze the long term trend from the highly fluctuating raw stock price, we started by applying several DSP preprocessing techniques to filter out noise.
+              <p>
+                The individual stock data was fetched from online open API, where we are able to get price of up to the past 20 years given the stock symbol. To analyze the long term trend from the highly fluctuating raw stock price, we started by applying several DSP preprocessing techniques to filter out noise.
+              </p>
               <ul class="toc">
                 <h4>Contents</h4>
                 <a href="#psma">Simple Moving Average Filter (SMA)</a>
@@ -141,50 +147,55 @@
               </ul>
 
               <h5 id="psma">Simple Moving Average Filter (SMA)</h5>
-              The simple moving average filter is one the most commonly used FIR filters to reduce the noises and get the long term trend from the signal. The simple moving average is the unweighted mean of the data over a specific period, which can be calculated from equation \eqref{eq:sma}.
-              \begin{align}
-              y[n]=\dfrac{1}{N}\sum_{k=1}^N x[n-N+k]
-              \label{eq:sma}.
-              \end{align}
-              Ideally, if the raw data contains zero centered periodic fluctuations, a simple moving average filter is able to completely eliminate the noises. Another property of the SMA filter is that SMA always lags behind the actual data since it takes the previous \(n\) data in the calculation.
+              <p>
+                The simple moving average filter is one the most commonly used FIR filters to reduce the noises and get the long term trend from the signal. The simple moving average is the unweighted mean of the data over a specific period, which can be calculated from equation \eqref{eq:sma}.
+                \begin{align}
+                y[n]=\dfrac{1}{N}\sum_{k=1}^N x[n-N+k]
+                \label{eq:sma}.
+                \end{align}
+                Ideally, if the raw data contains zero centered periodic fluctuations, a simple moving average filter is able to completely eliminate the noises. Another property of the SMA filter is that SMA always lags behind the actual data since it takes the previous \(n\) data in the calculation.
+              </p>
               <h5 id="pewma">Exponentially Weighted Moving Average Filter (EWMA)</h5>
-              An exponentially weighter moving average filter is the IIR moving average filter, where the weight factor decreases exponentially. It can be calculated using the recursive relation from equation \eqref{ewma}.
-              \begin{align}
-              y[n]=\alpha x[n] + (1 - \alpha) y[n-1]\label{ewma},
-              \end{align}
-              The response is smoother as the factor \(\alpha\) decreases. Typically the EWMA filter has less lag and are therefore more sensitive to the changes in the raw data than the SMA, but depending on the shape of the raw data, it is possible for one to not necessarily be better than the other.
+              <p>
+                An exponentially weighter moving average filter is the IIR moving average filter, where the weight factor decreases exponentially. It can be calculated using the recursive relation from equation \eqref{ewma}.
+                \begin{align}
+                y[n]=\alpha x[n] + (1 - \alpha) y[n-1]\label{ewma},
+                \end{align}
+                The response is smoother as the factor \(\alpha\) decreases. Typically the EWMA filter has less lag and are therefore more sensitive to the changes in the raw data than the SMA, but depending on the shape of the raw data, it is possible for one to not necessarily be better than the other.
+              </p>
 
               <h5 id="pkalman">Kalman Filter</h5>
-              The Kalman filter, also known as a linear quadratic estimation (LQE), is a two-stage filter which estimates the state of a dynamic system based on a series of measurements containing unknown noises and inaccuracies. It recursively makes predictions based on the previous state and then corrects the predictions based on the new measurement. It is based on the discrete linear dynamic system which could be written as
-              \begin{align}
-              X(t+1)&=\Phi X(t)+\Gamma w(t)\label{ssm1}\\
-              y(t)&=H X(t)+v(t)\label{ssm2}
-              \end{align}
-              The recursive relation on predictions and corrections are shown in equations \eqref{kalman1} - \eqref{kalman2}
-              \begin{align}
-              \text{Prediction:}~~~~~ & \hat{\mathbf{x}}_{k| k-1} = \mathbf{F}_k\hat{\mathbf{x}}_{k-1| k-1} + \mathbf{B}_k \mathbf{u}_k \label{kalman1}\\
-              &\mathbf{P}_{k| k-1} =  \mathbf{F}_k \mathbf{P}_{k-1| k-1} \mathbf{F}_k^\mathbf{T} + \mathbf{Q}_k\\
-              \text{Correction:}~~~~~ & \mathbf{v}_k=\mathbf{z}_k-\mathbf{H}_k\hat{x}_{k|k-1}\\
-              & K_{k}=P_{k|k-1}\mathbf{H}^T(\mathbf{H}P_{k|k-1}\mathbf{H}^T+R)^{-1}\\
-              & \hat{\mathbf{x}}_{k|k}=\hat{\mathbf{x}}_{k| k-1}+\mathbf{K}_k\mathbf{v}_k\\
-              & \mathbf{P}_{k|k}=(\mathbb{I}-\mathbf{K}_k)\mathbf{P}_{k|k-1}\label{kalman2}
-              \end{align}
-              By recursive predictions and corrections, one is able to dynamically track the non-stationary system. One advantage of using the Kalman filter is that it doesn't make an assumption on the distribution of noises, which allows it to be used on more general signals .
+              <p>
+                The Kalman filter, also known as a linear quadratic estimation (LQE), is a two-stage filter which estimates the state of a dynamic system based on a series of measurements containing unknown noises and inaccuracies. It recursively makes predictions based on the previous state and then corrects the predictions based on the new measurement. It is based on the discrete linear dynamic system which could be written as
+                \begin{align}
+                X(t+1)&=\Phi X(t)+\Gamma w(t)\label{ssm1}\\
+                y(t)&=H X(t)+v(t)\label{ssm2}
+                \end{align}
+                The recursive relation on predictions and corrections are shown in equations \eqref{kalman1} - \eqref{kalman2}
+                \begin{align}
+                \text{Prediction:}~~~~~ & \hat{\mathbf{x}}_{k| k-1} = \mathbf{F}_k\hat{\mathbf{x}}_{k-1| k-1} + \mathbf{B}_k \mathbf{u}_k \label{kalman1}\\
+                &\mathbf{P}_{k| k-1} =  \mathbf{F}_k \mathbf{P}_{k-1| k-1} \mathbf{F}_k^\mathbf{T} + \mathbf{Q}_k\\
+                \text{Correction:}~~~~~ & \mathbf{v}_k=\mathbf{z}_k-\mathbf{H}_k\hat{x}_{k|k-1}\\
+                & K_{k}=P_{k|k-1}\mathbf{H}^T(\mathbf{H}P_{k|k-1}\mathbf{H}^T+R)^{-1}\\
+                & \hat{\mathbf{x}}_{k|k}=\hat{\mathbf{x}}_{k| k-1}+\mathbf{K}_k\mathbf{v}_k\\
+                & \mathbf{P}_{k|k}=(\mathbb{I}-\mathbf{K}_k)\mathbf{P}_{k|k-1}\label{kalman2}
+                \end{align}
+                By recursive predictions and corrections, one is able to dynamically track the non-stationary system. One advantage of using the Kalman filter is that it doesn't make an assumption on the distribution of noises, which allows it to be used on more general signals .
 
-              In order to apply it on the stock prices, a simple assumption is made based on the high fluctuation of the stock price to model the stock market as a maneuvering dynamic system, that is \begin{align}
-              x(t+1)=x(t)+T\dot{x}(t)+\dfrac{1}{2}a(t) T^2\\
-              \dot{x}(t+1)=\dot{x}(t)+a(t) T\\
-              y(t)=x(t)+v(t)
-              \end{align}
-              where \(x\) and \(\dot{x}\) are the stock price and its change rate, \(y\) is the measurement and \(v\) is the measurement noise. If we regard the acceleration \(a\) as a white noise sequence, we can model the stock market as a linear dynamic system described in equation \eqref{ssm1}-\eqref{ssm2}, with
-              \begin{align*}
+                In order to apply it on the stock prices, a simple assumption is made based on the high fluctuation of the stock price to model the stock market as a maneuvering dynamic system, that is \begin{align}
+                x(t+1)=x(t)+T\dot{x}(t)+\dfrac{1}{2}a(t) T^2\\
+                \dot{x}(t+1)=\dot{x}(t)+a(t) T\\
+                y(t)=x(t)+v(t)
+                \end{align}
+                where \(x\) and \(\dot{x}\) are the stock price and its change rate, \(y\) is the measurement and \(v\) is the measurement noise. If we regard the acceleration \(a\) as a white noise sequence, we can model the stock market as a linear dynamic system described in equation \eqref{ssm1}-\eqref{ssm2}, with
+                \begin{align*}
                 X(t)=\left[\begin{array}{c}x(t)\\\dot{x}(t)\end{array}\right]&&
                 \Phi=\left[\begin{array}{cc}1&T\\0&1\end{array}\right],&&
                 \Gamma=\left[\begin{array}{c}\frac{T^2}{2}\\T\end{array}\right],&&
                 H=\left[\begin{array}{cc}1&0\end{array}\right]&&
                 w(t)=a(t)
-              \end{align*}
-
+                \end{align*}
+              </p>
             </div>
           </section>
         </div>
@@ -241,64 +252,173 @@
           </section>
         </div>
         <div class="mdl-layout__tab-panel" id="demo">
-
-          <section class="section--center mdl-grid mdl-grid--no-spacing">
-            <div class="mdl-cell mdl-cell--12-col">
-              <h4>Demo</h4>
-              <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                <div class="mdl-card mdl-cell mdl-cell--12-col">
-                  <div class="mdl-card__supporting-text">
-                    <div class="mdl-textfield mdl-js-textfield">
-                      <input v-model="symbol" class="mdl-textfield__input" type="text" id="symbol">
-                      <label class="mdl-textfield__label" for="symbol">Stock Symbol (eg. MSFT)...</label>
-                    </div>
-                    <button v-on:click="getPrice()" class="mdl-button mdl-js-button mdl-button--raised">
-                      Button
-                    </button>
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div class="mdl-card__supporting-text">
+                <h4>Stock</h4>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-upgraded">
+                  <input v-model="symbol" class="mdl-textfield__input" type="text" id="symbol">
+                  <label class="mdl-textfield__label" for="symbol">Stock Symbol (eg. MSFT)...</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-upgraded">
+                  <input v-model="from" class="mdl-textfield__input" type="text" id="from">
+                  <label class="mdl-textfield__label" for="from">From</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-upgraded">
+                  <input v-model="to" class="mdl-textfield__input" type="text" id="to">
+                  <label class="mdl-textfield__label" for="to">To</label>
+                </div>
+                <button v-on:click="getPrice()" class="mdl-button mdl-js-button mdl-button--raised">
+                  Get Price Data
+                </button>
+                <p>
+                  This page is only for demonstration of the algorithms.
+                  The algorithms implemented on this webpage are written in Javascript, which represents numbers as 64-bit floating points.
+                  It is highly possible that the results on this webpage are not as accurate as those in MATLAB, especially for the Prony's Method.
+                </p>
+              </div>
+            </div>
+          </section>
+          <section v-show="this.price.length" class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div class="mdl-card__supporting-text">
+                <h4>Data Preprocessing</h4>
+                <table style="width: 80%; margin:20px auto 0 auto">
+                  <tr>
+                    <th width="50%">
+                      <p> <span>\(n\)</span>={{sma_n}} </p>
+                      <p style="width:300px">
+                        <input class="mdl-slider mdl-js-slider" type="range" v-model="sma_n"
+                               min="1" max="100" value="3" tabindex="0">
+                      </p>
+                    </th>
+                    <th width="50%">
+                      <p><span>\(\alpha\)</span>=0.{{ewma_a}}</p>
+                      <p style="width:300px">
+                        <input class="mdl-slider mdl-js-slider" type="range" v-model="ewma_a"
+                               min="1" max="100" value="33" tabindex="0">
+                      </p>
+                    </th>
+                  </tr>
+                </table>
+                <div id="price" style="width:100%;"></div>
+              </div>
+            </div>
+          </section>
+          <section v-show="this.price.length" class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div style="margin: 40px 40px 0px 40px;" class="mdl-card__supporting-text">
+                <h4 >Forecasting</h4>
+              </div>
+              <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+                <div class="mdl-tabs__tab-bar">
+                  <a id="regtab" href="#dreg" class="mdl-tabs__tab is-active">Linear Regression</a>
+                  <a id="pronytab" href="#dprony" class="mdl-tabs__tab">Prony's Method</a>
+                  <a id="kalmantab" href="#dkalman" class="mdl-tabs__tab">Kalman Filter</a>
+                </div>
+                <table style="width: 80%; margin:20px auto 0 auto">
+                  <tr>
+                    <th width="16%">
+                      Filter
+                    </th>
+                    <td width="28%">
+                      <label class = "mdl-radio mdl-js-radio" for = "fsma">
+                        <input type = "radio" id = "fsma" name = "filter"
+                               v-model="filter" value="sma"
+                               class = "mdl-radio__button" checked>
+                        <span class = "mdl-radio__label">SMA</span>
+                      </label>
+                    </td>
+                    <td width="28%">
+                      <label class = "mdl-radio mdl-js-radio" for = "fewma">
+                        <input type = "radio" id = "fewma" name = "filter"
+                               v-model="filter" value="ewma"
+                               class = "mdl-radio__button">
+                        <span class = "mdl-radio__label">EWMA</span>
+                      </label>
+                    </td>
+                    <td width="28%">
+                      <label class = "mdl-radio mdl-js-radio" for = "ffkalman">
+                        <input type = "radio" id = "ffkalman" name = "filter"
+                               v-model="filter" value="kalman"
+                               class = "mdl-radio__button">
+                        <span class = "mdl-radio__label">Kalman</span>
+                      </label>
+                    </td>
+                  </tr>
+                </table>
+                <div class="mdl-tabs__panel is-active" id="dreg">
+                  <div id="regression" style="width:100%;"></div>
+                  <div style="position: absolute;right: 30px;bottom: 30px;text-align: center;">
+                    <h5>MSE</h5>
+                    {{mse[0].toFixed(3)}}
                   </div>
                 </div>
-              </section>
-              <div id="dprep">
-                <h5>Data Preprocessing</h5>
-                <div style="width:100%;">
-                  <p> <span>\(n\)</span>={{sma_n}} </p>
-                  <p style="width:300px">
-                    <input class="mdl-slider mdl-js-slider" type="range" v-model="sma_n"
-                           min="1" max="100" value="3" tabindex="0">
-                  </p>
-                  <p><span>\(\alpha\)</span>={{ewma_a}}</p>
-                  <p style="width:300px">
-                    <input class="mdl-slider mdl-js-slider" type="range" v-model="ewma_a"
-                           min="1" max="100" value="33" tabindex="0">
-                  </p>
-                  <div id="price" style="width:100%;"></div>
-                  <button v-on:click="drawRegression()" class="mdl-button mdl-js-button mdl-button--raised">
-                    Button
-                  </button>
-                  <div id="regression" style="width:100%;"></div>
+                <div class="mdl-tabs__panel" id="dprony">
+                  <table style="width: 80%; margin:20px auto 0 auto">
+                    <tr>
+                      <th width="50%">
+                        <p> <span># of poles</span>={{p}} </p>
+                        <p style="width:300px">
+                          <input class="mdl-slider mdl-js-slider" type="range" v-model="p"
+                                 :min="0" max="20" value="3" tabindex="0">
+                        </p>
+                      </th>
+                      <th width="50%">
+                        <p> <span># of zeros</span>={{z}} </p>
+                        <p style="width:300px">
+                          <input class="mdl-slider mdl-js-slider" type="range" v-model="z"
+                                 :min="0" max="20" value="3" tabindex="0">
+                        </p>
+                      </th>
+                    </tr>
+                  </table>
+                  <div>
+                    <div id="prony" style="width:100%;"></div>
+                    <div style="position: absolute;right: 30px;bottom: 30px;text-align: center;">
+                      <h5>MSE</h5>
+                      {{mse[1].toFixed(3)}}
+                    </div>
+                  </div>
+
+                </div>
+                <div class="mdl-tabs__panel" id="dkalman">
+                  <div id="kalman" style="width:100%;"></div>
+                  <div style="position: absolute;right: 30px;bottom: 30px;text-align: center;">
+                    <h5>MSE</h5>
+                    {{mse[2].toFixed(3)}}
+                  </div>
                 </div>
               </div>
             </div>
-
-
-
-
-
           </section>
         </div>
-        <footer class="mdl-mega-footer">
-          <div class="mdl-mega-footer--middle-section">
-            EECS 351 Digital Signal Processing and Analysis
-          </div>
-        </footer>
+        <div class="mdl-layout__tab-panel" id="conc">
+          <section class="section--center mdl-grid mdl-grid--no-spacing">
+            <div class="mdl-cell mdl-cell--12-col">
+              <h4>Conclusion</h4>
+              <p>
+                All three algorithms can successfully predict future stock prices. The linear regression doesn't give a precise prediction on a specific day, but we are able to find the long-term trend of the stock price at very little cost. Both Prony's algorithm and Kalman filter are good for short-term prediction, and usually Kalman filter would give a better prediction, although the Kalman filter could only predict one step ahead.
+              </p>
+              <p>
+                Further improvement could be made by implementing the algorithms on more stocks from different markets so that we can verify the accuracy of the algorithms and also tune the parameters of the preprocessing filters for the best performance. We could also categorize the different stocks based on price, market capitalization, or sector to increase the accuracy of our prediction.
+              </p>
+              <p>
+                Another area of possible improvement would be to have an "event detection system" that recognizes and categorizes events to predict the impact of certain pieces of information on a stocks overall price. For instance events could be auto categorized on a seven point scale ranging from extremely negative to extremely positive based on the response of the market to whatever news occurred and then based on the particular stock and the severity of the event we could predict the overall impact. For example recently news came out that impacted the share price of Facebook, however when this news broke if we had implemented this improvement we could have more accurately predicted that change and in turn saved money. We could even extend upon this to include an estimate for the amount of time it would take for the impact to stabilize in the stock price based on how long it took for the given severity levels to stabilize in the past.
+              </p>
+            </div>
+          </section>
+        </div>
       </main>
+      <footer class="mdl-mega-footer">
+        <div class="mdl-mega-footer--middle-section">
+          EECS 351 Digital Signal Processing and Analysis
+        </div>
+      </footer>
     </div>
-
+    <script src="http://code.jquery.com/jquery-git.min.js"></script>
     <script src="scripts/material.min.js"></script>
-    <!-- build:js scripts/main.min.js -->
     <script src="scripts/main.js"></script>
-    <!-- endbuild -->
-
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         TeX: { equationNumbers: { autoNumber: "AMS" } }
@@ -307,10 +427,10 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.1.2/math.min.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="scripts/demo.js"></script>
+    <script src="scripts/moment.min.js"></script>
+    <script src="scripts/mdDateTimePicker.min.js"></script>
 
-    <!-- Built with love using Web Starter Kit -->
+    <script src="scripts/demo.js"></script>
   </body>
 </html>
